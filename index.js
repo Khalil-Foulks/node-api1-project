@@ -1,9 +1,11 @@
 const express = require("express")
 const shortid = require("shortid")
+const cors = require("cors")
 
 const server = express();
 
 server.use(express.json())
+server.use(cors())
 
 let users = [{ id: shortid.generate(), name: 'Khalil', bio: "this is a bio" },{ id: shortid.generate(), name: 'John', bio: "bio 2" }, { id: shortid.generate(), name: 'Doe', bio: "bio 3" }]
 
