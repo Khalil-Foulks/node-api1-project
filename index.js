@@ -49,7 +49,6 @@ server.get('/api/users/:id', (req, res) => {
 
 server.delete('/api/users/:id', (req, res) => {
     const id = req.params.id;
-    // let filtered = users.filter(u => u.id !== id);
     
     try{
         if(users.find(u => u.id === id)){
@@ -66,26 +65,23 @@ server.delete('/api/users/:id', (req, res) => {
 server.put('/api/users/:id', (req, res) => {
     const id = req.params.id;
     const changes = req.body;
+    const user = req.body
 
     let found = users.find(a => a.id === id);
 
-    if (found) {
-        Object.assign(found, changes);
-        res.status(200).json(users);
-    } else {
-        res.status(404).json({ message: `There is no account with id ${id}` })
-    }
-
-    
     try{
-        if(!user.name || !user.bio){
-            res.status(400).json({errorMessage: "Please provide a name and bio for the user."})
+        if(found){
+            if(!user.name || !user.bio){
+                res.status(400).json({errorMessage: "Please provide a name and bio for the user."})
+            } else {
+                Object.assign(found, changes);
+                res.status(200).json(users);
+            }
         } else {
-            users.push(user)
-            res.status(201).json(users)
+            res.status(404).json({ message: "The user with the specified ID does not exist." })
         }
     } catch(err){
-        res.status(500).json({errorMessage: "There was an error while saving the user to the database"});
+        res.status(500).json({ errorMessage: "The user information could not be modified." });
     }
 });
 
