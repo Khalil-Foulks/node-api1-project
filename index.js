@@ -5,7 +5,7 @@ const server = express();
 
 server.use(express.json())
 
-let users = [{ id: shortid.generate(), name: 'Khalil', bio:"this is a bio" },{ id: shortid.generate(), name: 'John', bio:"cagadfgasdfdsf" }, { id: shortid.generate(), name: 'Doe', bio:"gahhvhsgdaga" }]
+let users = [{ id: shortid.generate(), name: 'Khalil', bio: "this is a bio" },{ id: shortid.generate(), name: 'John', bio: "bio 2" }, { id: shortid.generate(), name: 'Doe', bio: "bio 3" }]
 
 server.post('/api/users', (req, res) => {
     const user = req.body
@@ -20,12 +20,33 @@ server.get('/api/users', (req, res) => {
 })
 
 server.get('/api/users/:id', (req, res) => {
-    const id = req.params.id.toLocaleLowercase();
+    const id = req.params.id;
 
-    users = users.filter(u => u.id.toLocaleLowerCase() === id);
+    users = users.filter(u => u.id === id);
 
     res.status(200).json(users)
 })
+
+server.delete('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+    users = users.filter(u => u.id !== id);
+
+    res.status(204).end();
+})
+
+server.put('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+    const changes = req.body;
+
+    let found = users.find(a => a.id === id);
+
+    if (found) {
+        Object.assign(found, changes);
+        res.status(200).json(users);
+    } else {
+        res.status(404).json({ message: `There is no account with id ${id}` })
+    }
+});
 
 const port = 8000;
 
