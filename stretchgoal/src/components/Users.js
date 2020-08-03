@@ -21,12 +21,28 @@ const Users = () => {
         })
     }, [])
 
+    const deleteUser = id => {
+        axios.delete(`http://localhost:8000/api/users/${id}`)
+        .then (res => {
+            console.log("deleted", res)
+            
+            axios.get("http://localhost:8000/api/users")
+            .then(res => {
+            console.log(res)
+            setUsers(res.data)
+            })
+            .catch(err => {
+            console.log(err)
+            })
+        })
+    }
+
     return(
         <div>
             <h1>List of Users</h1>
             {
                 users.map((user) => {
-                    return <UserCard key={user.id} user={user}/>
+                    return <UserCard key={user.id} user={user} deleteUser={deleteUser}/>
                 })
             }
         </div>
