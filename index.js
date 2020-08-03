@@ -13,13 +13,13 @@ server.post('/api/users', (req, res) => {
 
     try{
         if(!user.name || !user.bio){
-            res.status(400).json({errorMessage: "Please provide a name and bio for the user."})
+            res.status(400).json({ errorMessage: "Please provide a name and bio for the user." })
         } else {
             users.push(user)
             res.status(201).json(users)
         }
     } catch(err){
-        res.status(500).json({errorMessage: "There was an error while saving the user to the database"});
+        res.status(500).json({ errorMessage: "There was an error while saving the user to the database" });
     }
 })
 
@@ -28,13 +28,13 @@ server.get('/api/users', (req, res) => {
     try{
         res.status(200).json(users)
     } catch(err){
-        res.status(500).json({errorMessage: "The users information could not be retrieved."});
+        res.status(500).json({ errorMessage: "The users information could not be retrieved." });
     }
 })
 
 server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
-    found = users.find(u => u.id === id);
+    let found = users.find(u => u.id === id);
     
     try{
         if(found){
@@ -43,16 +43,24 @@ server.get('/api/users/:id', (req, res) => {
             res.status(404).json({ message: "The user with the specified ID does not exist." })
         }
     } catch(err){
-        res.status(500).json({errorMessage: "The user information could not be retrieved."});
+        res.status(500).json({ errorMessage: "The user information could not be retrieved." });
     }
-
 })
 
 server.delete('/api/users/:id', (req, res) => {
     const id = req.params.id;
-    users = users.filter(u => u.id !== id);
-
-    res.status(204).end();
+    // let filtered = users.filter(u => u.id !== id);
+    
+    try{
+        if(users.find(u => u.id === id)){
+            users = users.filter(u => u.id !== id);
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: "The user with the specified ID does not exist." })
+        }
+    } catch(err){
+        res.status(500).json({ errorMessage: "The user could not be removed" });
+    }
 })
 
 server.put('/api/users/:id', (req, res) => {
